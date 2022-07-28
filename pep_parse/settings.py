@@ -6,7 +6,6 @@ NEWSPIDER_MODULE = 'pep_parse.spiders'
 ROBOTSTXT_OBEY = True
 
 FEEDS = {
-    # путь задан таким образом для прохождения тестов
     'results/pep_%(time)s.csv': {
         'format': 'csv',
         'fields': ['number', 'name', 'status'],

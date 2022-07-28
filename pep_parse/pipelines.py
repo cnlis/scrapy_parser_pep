@@ -1,4 +1,3 @@
-import csv
 import datetime as dt
 from collections import Counter
 from pathlib import Path
@@ -17,10 +16,6 @@ class PepParsePipeline:
         return item
 
     def close_spider(self, spider):
-        result = [('Статус', 'Количество')]
-        result.extend(self.counter.items())
-        result.append(('Total', self.counter.total()))
-
         now = dt.datetime.now()
         now_formatted = now.strftime(DATETIME_FORMAT)
 
@@ -28,5 +23,7 @@ class PepParsePipeline:
                 BASE_DIR / 'results' / f'status_summary_{now_formatted}.csv',
                 'w', encoding='utf-8'
         ) as f:
-            writer = csv.writer(f, dialect='unix')
-            writer.writerows(result)
+            f.write('Статус,Количество\n')
+            for key, value in self.counter.items():
+                f.write(f'{key},{value}\n')
+            f.write(f'Total,{sum(self.counter.values())}\n')
