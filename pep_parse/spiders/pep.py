@@ -1,4 +1,8 @@
+import re
+
 import scrapy
+
+PEP_NUMBER_PATTERN = r'^PEP (?P<number>\d+) .+$'
 
 
 class PepSpider(scrapy.Spider):
@@ -7,7 +11,18 @@ class PepSpider(scrapy.Spider):
     start_urls = ['https://peps.python.org/']
 
     def parse(self, response, **kwargs):
-        pass
+        numerical_index = response.xpath('//*[@id="numerical-index"]')
+        all_docs = numerical_index.css('a::attr(href)')
+        for doc_link in all_docs:
+            yield response.follow(doc_link, callback=self.parse_pep)
 
     def parse_pep(self, response):
-        pass
+        name = response.css('h1.page-title::text').get().strip()
+        number = re.search(PEP_NUMBER_PATTERN, name).group(1)
+        yield {
+            'number': number,
+            'name': name,
+            'status': response.css(
+                'dt:contains("Status") + dd::text'
+            ).get().strip(),
+        }
