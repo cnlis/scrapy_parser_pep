@@ -2,7 +2,7 @@ import csv
 import datetime as dt
 from collections import Counter
 
-from .constants import BASE_DIR, DATETIME_FORMAT, SUMMARY_FILENAME
+from .constants import BASE_DIR, DATETIME_FORMAT
 
 
 class PepParsePipeline:
@@ -20,11 +20,10 @@ class PepParsePipeline:
 
         now = dt.datetime.now()
         now_formatted = now.strftime(DATETIME_FORMAT)
-        file_name = f'{SUMMARY_FILENAME}_{now_formatted}.csv'
 
-        results_dir = BASE_DIR / 'results'
-        results_dir.mkdir(exist_ok=True)
-        file_path = results_dir / file_name
-        with open(file_path, 'w', encoding='utf-8') as f:
+        with open(
+                BASE_DIR / 'results' / f'status_summary_{now_formatted}.csv',
+                'w', encoding='utf-8'
+        ) as f:
             writer = csv.writer(f, dialect='unix')
             writer.writerows(result)
