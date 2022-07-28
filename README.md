@@ -25,3 +25,5 @@ scrapy crawl pep
 ```
 
 Результаты парсинга сохраняются в папке results.
+
+*Автор: Кирилл Лисицынский (https://github.com/cnlis/)*

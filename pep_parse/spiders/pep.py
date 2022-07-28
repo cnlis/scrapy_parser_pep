@@ -2,6 +2,8 @@ import re
 
 import scrapy
 
+from pep_parse.items import PepParseItem
+
 PEP_NUMBER_PATTERN = r'^PEP (?P<number>\d+) .+$'
 
 
@@ -19,10 +21,11 @@ class PepSpider(scrapy.Spider):
     def parse_pep(self, response):
         name = response.css('h1.page-title::text').get().strip()
         number = re.search(PEP_NUMBER_PATTERN, name).group(1)
-        yield {
+        data = {
             'number': number,
             'name': name,
             'status': response.css(
                 'dt:contains("Status") + dd::text'
             ).get().strip(),
         }
+        yield PepParseItem(data)
